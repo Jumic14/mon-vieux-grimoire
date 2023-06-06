@@ -84,7 +84,6 @@ exports.rateBook = (req, res, next) => {
   }
   Book.findOne({ _id: req.params.id })
     .then((book) => {
-      console.log(book)
         book.ratings.push(newRating);
         let totalRating = 0;
         for (let i = 0; i < book.ratings.length; i++) {
@@ -92,11 +91,20 @@ exports.rateBook = (req, res, next) => {
           totalRating += currentRating;
         }
         book.averageRating = totalRating / book.ratings.length;
-     
-    book.save()
+        console.log(book)
+    return book
     })
-    .then((book) => {
+    .then(book => {
       res.status(201).json(book)
+      book.save({id:book._id})
     })
     .catch(error => res.status(500).json({ error: 'Une erreur s\'est produite lors de l\'évaluation du livre.' }));
+};
+
+exports.getBestRatingBooks = (req, res, next) => {
+  Book.find()
+    .sort({averageRating: -1})
+    .limit(3)
+    .then(bestRatedBook => res.status(200).json(bestRatedBook))
+    .catch(error => res.status(400).json({error}))
 };
