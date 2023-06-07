@@ -7,6 +7,9 @@ const storage = SharpMulter({
     callback(null, 'images');
   },
   imageOptions:{
+    filename: (req, file, callback) => {
+      callback(null, file.originalname.split(' ').join('_') + Date.now());
+    },
     fileFormat: "webp",
     resize: { width: 500, height: 400 },
       }
