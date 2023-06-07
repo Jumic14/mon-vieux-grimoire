@@ -10,7 +10,6 @@ exports.createBook = (req, res, next) => {
     userId: req.auth.userId,
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   })
-  console.log(bookObject)
   book.save()
   .then(() => {res.status(201).json({message: 'Post saved successfully!'});})
   .catch((error) => {res.status(400).json({error: error})})
@@ -27,7 +26,6 @@ exports.modifyBook = (req, res, next) => {
        ...JSON.parse(req.body.book),
        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
    } : { ...req.body };
- 
    delete bookObject._userId;
    Book.findOne({_id: req.params.id})
        .then((book) => {
@@ -91,7 +89,6 @@ exports.rateBook = (req, res, next) => {
           totalRating += currentRating;
         }
         book.averageRating = totalRating / book.ratings.length;
-        console.log(book)
     return book
     })
     .then(book => {
